@@ -1,6 +1,14 @@
 <script setup lang="ts">
 const { messages, chat, sendMessage } = useChat();
 
+const typing = ref(false);
+
+const handleSendMessage = async (message: string) => {
+  typing.value = true;
+  await sendMessage(message);
+  typing.value = false;
+};
+
 const appConfig = useAppConfig();
 const title = computed(() =>
   chat.value?.title
@@ -14,5 +22,5 @@ useHead({
 </script>
 
 <template>
-  <ChatWindow :messages :chat @send-message="sendMessage" />
+  <ChatWindow :typing :messages :chat @send-message="handleSendMessage" />
 </template>
