@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import type { Chat } from '#layers/chat/shared/types/types'
 
 const route = useRoute()
-console.log(route.params)
 const { messages, chat: chatFromChats, sendMessage } = useChat(route.params.id as string);
 
 if (!chatFromChats.value) {
