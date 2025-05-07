@@ -1,5 +1,3 @@
-import type { ChatMessage } from "~/types";
-
 export default function useChat(chatId: string) {
   const { chats } = useChats();
   const chat = computed(() => chats.value.find((c) => c.id === chatId))
@@ -9,7 +7,7 @@ export default function useChat(chatId: string) {
   function createMessage(message: string, role: ChatMessage["role"]) {
     const id = messages.value.length.toString();
 
-    return { id, role, content: message };
+    return { id, role, content: message, createdAt: new Date(), updatedAt: new Date() };
   }
 
   async function sendMessage(message: string) {

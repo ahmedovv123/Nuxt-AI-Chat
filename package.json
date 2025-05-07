@@ -20,6 +20,7 @@
     "nuxt": "^3.16.2",
     "ollama-ai-provider": "^1.2.0",
     "typescript": "^5.6.3",
+    "uuid": "^11.1.0",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"
   },

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
-import type { Chat } from '@/types'
+import type { Project, Chat } from '#layers/chat/shared/types/types'
 
 const route = useRoute()
 
@@ -8,7 +8,62 @@ defineProps<{
   isOpen: boolean
 }>()
 
-const { chats, createChatAndNavigate } = useChats()
+const { projects, createProject } = useProjects()
+const { chats, createChatAndNavigate, chatsInProject } = useChats()
+
+function isCurrentProject(projectId: string): boolean {
+  return route.params.projectId === projectId
+}
+
+const chatsInCurrentProject = computed(() =>
+  chatsInProject(route.params.projectId as string)
+)
+
+function formatProjectChat(
+  project: Project,
+  chat: Chat
+): NavigationMenuItem {
+  return {
+    label: chat.title || 'Untitled Chat',
+    to: `/projects/${project.id}/chats/${chat.id}`,
+    active: route.params.id === chat.id,
+  }
+}
+
+function formatProjectItem(
+  project: Project
+): NavigationMenuItem {
+  const isCurrent = isCurrentProject(project.id)
+
+  const baseItem: NavigationMenuItem = {
+    label: project.name,
+    to: `/projects/${project.id}`,
+    active: isCurrent,
+    defaultOpen: isCurrent
+  }
+
+  if (isCurrent) {
+    return {
+      ...baseItem,
+      children: chatsInCurrentProject.value.map(chat =>
+        formatProjectChat(project, chat)
+      )
+    }
+  }
+
+  return baseItem
+}
+
+const projectItems = computed<NavigationMenuItem[]>(
+  () => projects.value.map(formatProjectItem) || []
+)
+
+async function handleCreateProject() {
+  const newProject = await createProject()
+  await createChatAndNavigate({
+    projectId: newProject.id
+  })
+}
 
 const chatsWithoutProject = computed(() => chats.value.filter((c) => c.projectId === undefined))
 
@@ -46,6 +101,29 @@ async function handleCreateChat() {
     :class="{ '-translate-x-full': !isOpen }"
   >
     <div v-if="chatsWithoutProject.length" class="overflow-y-auto p-4">
+      <div v-if="projectItems.length" class="mb-4 overflow-auto p-4 border-b border-(--ui-border-muted)">
+        <div class="flex justify-between items-center mb-2">
+          <h2
+            class="text-sm font-semibold text-(--ui-text-muted)"
+          >
+            Projects
+          </h2>
+        </div>
+        <UNavigationMenu
+          orientation="vertical"
+          class="w-full"
+          :items="projectItems"
+          default-open
+        />
+        <UButton
+          size="sm"
+          color="neutral"
+          variant="soft"
+          icon="i-heroicons-plus-small"
+          class="mt-2 w-full"
+          @click="handleCreateProject"
+        > New Project </UButton>
+      </div>
       <div v-if="todayChats.length" class="mb-4">
         <div class="flex justify-between items-center mb-2">
           <h2
