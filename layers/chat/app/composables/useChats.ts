@@ -14,6 +14,29 @@ export default function useChats() {
     chats.value = data.value
   }
 
+  async function prefetchChatMessages() {
+    const recentChats = chats.value.toSorted((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()).slice(0, 2)
+
+    await Promise.all(
+      recentChats.map(async (chat) => {
+        try {
+          console.log(`prefetching ${chat.title}`)
+          const messages = await $fetch<ChatMessage[]>(
+            `/api/chats/${chat.id}/messages`
+          )
+
+          const targetChat = chats.value.find(c => c.id === chat.id)
+
+          if (targetChat) {
+            targetChat.messages = messages
+          }
+        } catch (e) {
+          console.error(`Failed to prefetch messages for chat ${chat.id}:`, e)
+        }
+      })
+    )
+  }
+
   async function createChat(
     options: { projectId?: string, title?: string } = {}
   ) {
@@ -56,6 +79,7 @@ export default function useChats() {
     createChat,
     chatsInProject,
     createChatAndNavigate,
-    fetchChats
+    fetchChats,
+    prefetchChatMessages
   }
 }
