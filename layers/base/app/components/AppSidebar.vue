@@ -111,7 +111,6 @@ async function handleCreateChat() {
           orientation="vertical"
           class="w-full"
           :items="projectItems"
-          default-open
         />
         <UButton
           size="sm"
@@ -134,7 +133,6 @@ async function handleCreateChat() {
           orientation="vertical"
           class="w-full"
           :items="todayChats"
-          default-open
         />
       </div>
       <div v-if="lastWeekChats.length" class="mb-4">
@@ -149,7 +147,6 @@ async function handleCreateChat() {
           orientation="vertical"
           class="w-full"
           :items="todayChats"
-          default-open
         />
       </div>
       <div v-if="lastMonthChats.length" class="mb-4">
@@ -164,7 +161,6 @@ async function handleCreateChat() {
           orientation="vertical"
           class="w-full"
           :items="lastMonthChats"
-          default-open
         />
       </div>
       <div v-if="olderChats.length" class="mb-4">
@@ -179,7 +175,6 @@ async function handleCreateChat() {
           orientation="vertical"
           class="w-full"
           :items="olderChats"
-          default-open
         />
       </div>
     </div>

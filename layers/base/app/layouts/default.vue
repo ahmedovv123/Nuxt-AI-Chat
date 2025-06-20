@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const isSidebarOpen = ref(false)
+const isSidebarOpen = ref(true)
 
 
 </script>
@@ -8,7 +8,8 @@ const isSidebarOpen = ref(false)
   <div class="layout-container">
     <AppHeader @toggle-sidebar="isSidebarOpen = !isSidebarOpen" />
     <AppSidebar :is-open="isSidebarOpen" />
-    <main class="main-content transition-all duration-300"
+    <main
+class="main-content transition-all duration-300"
           :class="{ 'ml-64': isSidebarOpen }">
       <slot />
     </main>

@@ -1,8 +1,8 @@
-import { generateText } from "ai";
-import { createOpenAI } from "@ai-sdk/openai";
-import { createOllama } from "ollama-ai-provider";
+import {generateText} from "ai";
+import {createOpenAI} from "@ai-sdk/openai";
+import {createOllama} from "ollama-ai-provider";
 
-import type { Message, LanguageModelV1 } from "ai";
+import type {Message, LanguageModelV1} from "ai";
 
 export const createOllamaModel = () => {
   const ollama = createOllama();
@@ -43,7 +43,7 @@ export async function generateChatTitle(
     messages: [
       {
         role: 'system',
-        content: 'Summarize the message in 3 or less short words.'
+        content: 'You are a helpful assistant that generates concise, descriptive titles for chat conversations. Generate a title that captures the essence of the first message in 3 short words or less.'
       },
       {
         role: 'user',
