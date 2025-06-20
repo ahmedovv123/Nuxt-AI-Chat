@@ -3,25 +3,34 @@ import {
   generateChatResponse,
 } from "../services/ai-service";
 
+import { ChatMessageSchema } from "../schemas";
+
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
+  const { success, data } = await readValidatedBody(
+    event,
+    ChatMessageSchema.safeParse
+  )
 
-  const { messages } = body;
+  if (!success) {
+    return 400
+  }
 
-  const id = messages.length.toString();
+  const { messages } = data as {
+    messages: ChatMessage[]
+    chatId: string
+  }
 
-  const { openaiApiKey } = useRuntimeConfig();
+  const openaiApiKey = useRuntimeConfig().openaiApiKey
+  const openaiModel = createOpenAIModel(openaiApiKey)
 
-  const openaiModel = createOpenAIModel(openaiApiKey);
-
-  // TODO: Add ollama model
-  // const ollamaModel = createOllamaModel();
-
-  const response = await generateChatResponse(openaiModel, messages);
+  const response = await generateChatResponse(
+    openaiModel,
+    messages
+  )
 
   return {
-    id,
-    role: "assistant",
+    id: messages.length.toString(),
+    role: 'assistant',
     content: response,
-  };
-});
+  }
+})
