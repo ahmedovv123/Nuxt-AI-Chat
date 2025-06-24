@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { Chat, ChatMessage } from "#layers/chat/shared/types/types";
 
-console.log("ChatWindow component loaded");
 
 const props = defineProps<{
   messages: ChatMessage[];

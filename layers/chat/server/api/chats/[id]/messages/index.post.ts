@@ -1,16 +1,19 @@
-import { createMessageForChat } from "#layers/chat/server/repository/chatRepository";
-import { CreateMessageSchema } from '../../../../schemas'
+import {createMessageForChat} from "#layers/chat/server/repository/chatRepository";
+import {CreateMessageSchema} from '../../../../schemas'
 
 export default defineEventHandler(async (event) => {
-  const { id } = getRouterParams(event)
+  const {id} = getRouterParams(event)
 
-  const { success, data } = await readValidatedBody(
+  const {success, data} = await readValidatedBody(
     event,
     CreateMessageSchema.safeParse
   )
 
   if (!success) {
-    return 400
+    return createError({
+      statusCode: 400,
+      statusMessage: 'Bad Request',
+    })
   }
 
   return createMessageForChat({
