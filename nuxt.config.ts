@@ -20,5 +20,9 @@ export default defineNuxtConfig({
     '/': {
       prerender: true
     }
+  },
+
+  imports: {
+    dirs: ['utils']
   }
 });
