@@ -14,11 +14,30 @@ export async function getAllChats() {
 }
 
 export async function getAllChatsByUser(
-  userId: string = '1'
+  userId: string
 ): Promise<ChatWithMessages[]> {
   return await prisma.chat.findMany({
     where: { userId },
     orderBy: { updatedAt: 'desc' },
+    include: {
+      project: true,
+      messages: {
+        orderBy: { createdAt: 'asc' },
+        take: 1,
+      },
+    },
+  })
+}
+
+export async function getChatByIdForUser(
+  id: string,
+  userId: string
+): Promise<ChatWithMessages | null> {
+  return await prisma.chat.findFirst({
+    where: {
+      id,
+      userId,
+    },
     include: {
       project: true,
       messages: {
@@ -73,14 +92,11 @@ export async function getMessagesByChatId(
 
 export async function createChat(data: {
   title?: string
-  userId?: string
+  userId: string
   projectId?: string
 }) {
   return await prisma.chat.create({
-    data: {
-      ...data,
-      userId: data.userId || '1',
-    },
+    data,
     include: {
       project: true,
       messages: true,
